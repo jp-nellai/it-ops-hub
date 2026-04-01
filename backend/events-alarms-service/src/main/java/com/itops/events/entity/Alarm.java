@@ -5,20 +5,17 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "events")
-public class Event extends PanacheEntity {
+@Table(name = "alarms")
+public class Alarm extends PanacheEntity {
 
     @Column(nullable = false)
-    public String eventId;
+    public String alarmId;
 
     @Column(nullable = false)
     public String deviceId;
 
     @Column(nullable = false)
-    public String eventType;
-
-    @Column
-    public String eventSource;
+    public String alarmName;
 
     @Column(columnDefinition = "TEXT")
     public String description;
@@ -27,29 +24,25 @@ public class Event extends PanacheEntity {
     public String severity;
 
     @Column
-    public LocalDateTime occurredAt;
+    public LocalDateTime triggerTime;
 
     @Column
     public LocalDateTime createdAt;
 
     @Column
-    public Boolean acknowledged;
-
-    @Column
-    public String acknowledgedBy;
-
-    @Column
-    public LocalDateTime acknowledgedAt;
+    public LocalDateTime resolvedAt;
 
     @Column
     public String status;
 
+    @Column
+    public String assignedTo;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.acknowledged = false;
-        if (this.occurredAt == null) {
-            this.occurredAt = LocalDateTime.now();
+        if (this.triggerTime == null) {
+            this.triggerTime = LocalDateTime.now();
         }
     }
 }
