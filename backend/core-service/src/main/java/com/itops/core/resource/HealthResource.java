@@ -1,25 +1,33 @@
 package com.itops.core.resource;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import io.quarkus.runtime.Quarkus;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import io.micrometer.core.instrument.MeterRegistry;
-import org.jboss.resteasy.reactive.RestResponse;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.health.Health;
+import org.eclipse.microprofile.health.HealthCheck;
+import org.eclipse.microprofile.health.HealthCheckResponse;
 
-@Path("/api/health")
+@Path("/api/v1/health")
 @Produces(MediaType.APPLICATION_JSON)
 public class HealthResource {
-    private final MeterRegistry meterRegistry;
 
-    public HealthResource(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
+    @GET
+    public Response getHealth() {
+        return Response.ok(new HealthStatus("UP", "Core Service is running")).build();
     }
 
     @GET
-    public RestResponse<HealthStatus> getHealth() {
-        meterRegistry.counter("health.checks.total").increment();
-        return RestResponse.ok(new HealthStatus("UP", "Core Service is healthy"));
+    @Path("/ready")
+    public Response getReadiness() {
+        return Response.ok(new HealthStatus("READY", "Core Service is ready to accept requests")).build();
+    }
+
+    @GET
+    @Path("/live")
+    public Response getLiveness() {
+        return Response.ok(new HealthStatus("LIVE", "Core Service is alive")).build();
     }
 
     public static class HealthStatus {
