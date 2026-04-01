@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: events-alarms
+  labels:
+    app: events-alarms
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: events-alarms
+  template:
+    metadata:
+      labels:
+        app: events-alarms
+    spec:
+      containers:
+      - name: events-alarms
+        image: <your-image-name>
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENV_VAR_NAME
+          value: ENV_VAR_VALUE

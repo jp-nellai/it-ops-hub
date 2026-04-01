@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-service
+  labels:
+    app: metrics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metrics-service
+  template:
+    metadata:
+      labels:
+        app: metrics-service
+        spec:
+          containers:
+          - name: metrics-service
+            image: your-image:latest
+            ports:
+            - containerPort: 8080
