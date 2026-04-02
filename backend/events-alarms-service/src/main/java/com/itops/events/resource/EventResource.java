@@ -1,31 +1,46 @@
 package com.itops.events.resource;
 
-import com.itops.events.entity.Event;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.jboss.logging.Logger;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.jboss.logging.Logger;
+
+import com.itops.events.entity.Event;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
 @Path("/api/v1/events")
+@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class EventResource {
 
     private static final Logger logger = Logger.getLogger(EventResource.class);
 
+    @Inject
+    EventRepository eventRepository;
+    
     @GET
     public Response getAllEvents() {
-        var events = Event.listAll();
+        var events = eventRepository.listAll();
         return Response.ok(events).build();
     }
 
     @GET
     @Path("/{eventId}")
     public Response getEvent(@PathParam("eventId") Long eventId) {
-        var event = Event.findById(eventId);
+        var event = eventRepository.findById(eventId);
         if (event == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -43,7 +58,7 @@ public class EventResource {
     @PUT
     @Path("/{eventId}")
     public Response updateEvent(@PathParam("eventId") Long eventId, Event updatedEvent) {
-        var event = Event.findById(eventId);
+        var event = eventRepository.findById(eventId);
         if (event == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -59,7 +74,7 @@ public class EventResource {
     @PUT
     @Path("/{eventId}/acknowledge")
     public Response acknowledgeEvent(@PathParam("eventId") Long eventId, AcknowledgeRequest request) {
-        var event = Event.findById(eventId);
+        var event = eventRepository.findById(eventId);
         if (event == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

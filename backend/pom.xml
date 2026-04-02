@@ -9,7 +9,6 @@
         <groupId>com.itops</groupId>
         <artifactId>it-ops-hub-parent</artifactId>
         <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>it-ops-hub-backend</artifactId>
@@ -23,7 +22,17 @@
         <module>events-alarms-service</module>
         <module>metrics-service</module>
     </modules>
-
+	
+	<properties>
+		<quarkus.platform.version>3.34.2</quarkus.platform.version>
+			<!-- Set Java version -->
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
+        <!-- Ensure Maven uses UTF-8 encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
     <dependencyManagement>
         <dependencies>
             <!-- Quarkus dependencies -->
