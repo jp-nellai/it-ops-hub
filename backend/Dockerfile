@@ -3,7 +3,6 @@ FROM maven:3.9.5-eclipse-temurin-21-alpine AS builder
 WORKDIR /src
 COPY pom.xml .
 COPY src ./src
-RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine AS runtime
 

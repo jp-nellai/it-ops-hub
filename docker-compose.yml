@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: it-ops-postgres
     environment:
       POSTGRES_USER: itops
@@ -12,9 +10,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/18/docker
+    networks:
+      - it-ops-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U itops"]
+      test: ["CMD-SHELL", "pg_isready -U itops -d itops_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -137,6 +137,10 @@ services:
       - "3000:3000"
     environment:
       REACT_APP_API_URL: http://localhost:8080
+    depends_on:
+      - metrics-service
+      - core-service
+      - events-alarms-service
     networks:
       - it-ops-network
 

@@ -1,21 +1,35 @@
-FROM node:20-alpine AS builder
+#FROM node:20-alpine AS builder
+#
+#WORKDIR /app
+#
+#COPY package*.json ./
+#RUN npm install
+#
+#COPY . .
+#RUN npm run build
+#
+## Stage 2: Serve with Nginx
+#FROM nginx:1.27-alpine 
+#
+## Copy build output to Nginx HTML folder
+#COPY target /usr/share/nginx/html
+#
+## Copy custom Nginx config (optional, for API proxying)
+##COPY nginx.conf /etc/nginx/conf.d/default.conf
+#
+## Expose port
+#EXPOSE 80
+#
+## Start Nginx
+##CMD ["nginx", "-g", "daemon off;"]
 
+FROM node:24-alpine AS build
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm install
-
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine
-
-WORKDIR /app
-
-RUN npm install -g serve
-
-COPY --from=builder /app/build ./build
-
-EXPOSE 3000
-
-CMD ["serve", "-s", "build", "-l", "3000"]
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80

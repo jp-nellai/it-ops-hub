@@ -1,21 +1,10 @@
-FROM maven:3.9.5-eclipse-temurin-21-alpine AS builder
-
-WORKDIR /src
-COPY pom.xml .
-COPY src ./src
-RUN mvn -q -DskipTests package
-
-FROM eclipse-temurin:21-jre-alpine AS runtime
-
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
+COPY target/quarkus-app/ /app/
 
-RUN addgroup -g 1001 -S app && adduser -u 1001 -S app -G app
-
-COPY --from=builder /app/target/quarkus-app/lib/ ./lib/
-COPY --from=builder /app/target/quarkus-app/*.jar ./
-COPY --from=builder /app/target/quarkus-app/app/ ./app/
-COPY --from=builder /app/target/quarkus-app/quarkus/ ./quarkus/
-
+# Stage 2: Runtime image
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/ /app/
 EXPOSE 8081
-
-ENTRYPOINT ["java", "-jar", "quarkus-run.jar"]
+ENTRYPOINT ["java", "-jar", "/app/quarkus-run.jar"]
