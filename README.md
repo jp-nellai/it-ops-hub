@@ -35,8 +35,5 @@ $ execute one of the scripts available on the folder depending on the OS
 ```
 Look at the console or list down the docker containers and you can find all the relevant containers are up and running
 
-### Contribution
-We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
-
 ### License
 This project is licensed under the MIT License.
